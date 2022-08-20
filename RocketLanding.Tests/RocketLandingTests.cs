@@ -76,28 +76,11 @@ public class RocketLandingTests
         Assert.That(result, Is.EqualTo("out of platform"));
     }
 
-    [Test]
-    public void TestOkForLanding()
+    [TestCaseSource(typeof(RocketLandingDataTests), nameof(RocketLandingDataTests.OkForLandingTests))]
+    public void TestOkForLanding(int rocketId, int row, int column)
     {
-        String result;
-        for (int i = 1; i <= 9; i++)
-        {
-            result = _landingAreaTestOkForLanding.CheckLanding(999, i, 1);
-            Assert.That(result, Is.EqualTo("ok for landing"), $"Error for (999, {i}, 1)");
-            result = _landingAreaTestOkForLanding.CheckLanding(999, i, 9);
-            Assert.That(result, Is.EqualTo("ok for landing"), $"Error for (999, {i}, 9)");
-
-            if (i != 1 && i != 9)
-            {
-                result = _landingAreaTestOkForLanding.CheckLanding(999, 1, i);
-                Assert.That(result, Is.EqualTo("ok for landing"), $"Error for (999, 1, {i})");
-                result = _landingAreaTestOkForLanding.CheckLanding(999, 9, i);
-                Assert.That(result, Is.EqualTo("ok for landing"), $"Error for (999, 9, {i})");
-            }
-        }
-
-        result = _landingAreaTestOkForLanding.CheckLanding(999, 5, 5);
-        Assert.That(result, Is.EqualTo("ok for landing"), "Error for (999, 5, 5)");
+        string result = _landingAreaTestOkForLanding.CheckLanding(rocketId, row, column);
+        Assert.That(result, Is.EqualTo("ok for landing"));
     }
 
     [TestCaseSource(typeof(RocketLandingDataTests), nameof(RocketLandingDataTests.ClashTests))]
@@ -143,6 +126,25 @@ public class RocketLandingDataTests
                         for(int column = Math.Max(usedColumn - 1, 1); column <= Math.Min(usedColumn + 1, 3); column++) 
                             yield return new TestCaseData(usedRow, usedColumn, row, column);
                         
+        }
+    }
+
+    public static IEnumerable OkForLandingTests
+    {
+        get
+        {
+            for (int i = 1; i <= 9; i++)
+            {
+                yield return new TestCaseData(999, i, 1);
+                yield return new TestCaseData(999, i, 9);
+
+                if (i != 1 && i != 9)
+                {
+                    yield return new TestCaseData(999, 1, i);
+                    yield return new TestCaseData(999, 9, i);
+                }
+            }
+            yield return new TestCaseData(999, 5, 5);
         }
     }
 
