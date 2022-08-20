@@ -2,6 +2,7 @@
 
 namespace RocketLanding.Tests;
 
+[TestFixture]
 public class RocketLandingTests
 {
     private IArea _landingAreaTestOutOfPlatform;
@@ -99,19 +100,7 @@ public class RocketLandingTests
         Assert.That(result, Is.EqualTo("ok for landing"), "Error for (999, 5, 5)");
     }
 
-
-    [TestCase(1, 1, 1, 1), TestCase(1, 1, 1, 2), TestCase(1, 1, 2, 1), TestCase(1, 1, 2, 2)] // Ocuppied at (1,1)
-    [TestCase(1, 2, 1, 1), TestCase(1, 2, 1, 2), TestCase(1, 2, 1, 3), TestCase(1, 2, 2, 1), TestCase(1, 2, 2, 2), TestCase(1, 2, 2, 3)] // Ocuppied at (1,2)
-    [TestCase(1, 3, 1, 2), TestCase(1, 3, 1, 3), TestCase(1, 3, 2, 2), TestCase(1, 3, 2, 3)] // Ocuppied at (1,3)
-
-    [TestCase(2, 1, 1, 1), TestCase(2, 1, 1, 2), TestCase(2, 1, 2, 1), TestCase(2, 1, 2, 2), TestCase(2, 1, 3, 1), TestCase(2, 1, 3, 2)] // Ocuppied at (2,1)
-    [TestCase(2, 2, 1, 1), TestCase(2, 2, 1, 2), TestCase(2, 2, 1, 3), TestCase(2, 2, 2, 1), TestCase(2, 2, 2, 2), TestCase(2, 2, 2, 3), TestCase(2, 2, 3, 1), TestCase(2, 2, 3, 2), TestCase(2, 2, 3, 3)]   // Ocuppied at (2,2)
-    [TestCase(2, 3, 1, 2), TestCase(2, 3, 1, 3), TestCase(2, 3, 2, 2), TestCase(2, 3, 2, 3), TestCase(2, 3, 3, 2), TestCase(2, 3, 3, 3)] // Ocuppied at (2,3)
-
-    [TestCase(3, 1, 2, 1), TestCase(3, 1, 2, 2), TestCase(3, 1, 3, 1), TestCase(3, 3, 2, 2)] // Ocuppied at (3,1)
-    [TestCase(3, 2, 2, 1), TestCase(3, 2, 2, 2), TestCase(3, 2, 2, 3), TestCase(3, 2, 3, 1), TestCase(3, 2, 3, 2), TestCase(3, 2, 3, 3)] // Ocuppied at (3,2)
-    [TestCase(3, 3, 2, 2), TestCase(3, 3, 2, 3), TestCase(3, 3, 3, 2), TestCase(3, 3, 3, 3)] // Ocuppied at (3,3)
-
+    [TestCaseSource(typeof(RocketLandingDataTests), nameof(RocketLandingDataTests.ClashTests))]
     public void TestClash(int usedRow, int usedColumn, int row, int column)
     {
         IArea landingArea = new Area(5, 5, 1, 1, 3, 3);
@@ -141,25 +130,19 @@ public class RocketLandingTests
 
 }
 
-[TestFixture]
-public class MyTests
+public class RocketLandingDataTests
 {
-    [TestCaseSource(typeof(MyDataClass), nameof(MyDataClass.TestCases))]
-    public int DivideTest(int n, int d)
-    {
-        return n / d;
-    }
-}
-
-public class MyDataClass
-{
-    public static IEnumerable TestCases
+    public static IEnumerable ClashTests
     {
         get
         {
-            yield return new TestCaseData(12, 3).Returns(4);
-            yield return new TestCaseData(12, 2).Returns(6);
-            yield return new TestCaseData(12, 4).Returns(3);
+            for(int usedRow = 1; usedRow <= 3; usedRow++) 
+                for(int usedColumn = 1; usedColumn <= 3; usedColumn++) 
+                    for(int row = Math.Max(usedRow - 1, 1); row <= Math.Min(usedRow + 1, 3); row++)
+                        for(int column = Math.Max(usedColumn - 1, 1); column <= Math.Min(usedColumn + 1, 3); column++) 
+                            yield return new TestCaseData(usedRow, usedColumn, row, column);
+                        
         }
     }
+
 }
