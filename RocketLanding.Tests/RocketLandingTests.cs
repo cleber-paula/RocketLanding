@@ -104,9 +104,10 @@ public class RocketLandingTests
     public void TestClash(int usedRow, int usedColumn, int row, int column)
     {
         IArea landingArea = new Area(5, 5, 1, 1, 3, 3);
-        landingArea.CheckLanding(1, usedRow, usedColumn);
+        string result = landingArea.CheckLanding(1, usedRow, usedColumn);
+        Assert.That(result, Is.EqualTo("ok for landing"));
 
-        string result = landingArea.CheckLanding(2, row, column);
+        result = landingArea.CheckLanding(2, row, column);
         Assert.That(result, Is.EqualTo("clash"));
     }
 
